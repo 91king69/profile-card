@@ -173,6 +173,8 @@
     min-height: 96px;
     cursor: pointer;
     transition: background 0.15s;
+    text-decoration: none;
+    color: inherit;
   }
   .card:active { background: var(--row-press); }
 
@@ -387,9 +389,9 @@
       </div>
     </section>
 
-    <!-- 学号信息 -->
+    <!-- 学号信息：点击进入班级成员列表 -->
     <section class="group">
-      <div class="card">
+      <a class="card" href="members.html">
         <div class="card-main">
           <div class="card-title">04052505</div>
           <div class="card-desc">重庆邮电大学/本科生/人工智能学院（重邮科大讯飞人工智能学院）/2025</div>
@@ -398,7 +400,7 @@
           <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
                 stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-      </div>
+      </a>
     </section>
 
   </div>
