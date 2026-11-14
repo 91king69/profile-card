@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>04052505</title>
+<style>
+  :root {
+    --page-bg: #000;
+    --label: #f0f0f0;
+    --crumb: #a2a2a6;
+    --sep: #5b7f9d;
+    --pad-l: 18px;
+    --pad-r: 15px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    height: 100%;
+    background: radial-gradient(1200px 600px at 50% 0%, #17171c 0%, #0a0a0c 45%, #050506 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+                 "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .phone {
+    position: relative;
+    width: 390px;
+    max-width: 100%;
+    height: 844px;
+    max-height: 100%;
+    background: var(--page-bg);
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09),
+                0 0 0 10px #0b0b0d,
+                0 0 0 11px rgba(255, 255, 255, 0.06),
+                0 40px 90px rgba(0, 0, 0, 0.75);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- 顶部：标题栏 + 面包屑 ---------- */
+  .top {
+    flex-shrink: 0;
+    background: var(--page-bg);
+  }
+
+  .mbar {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--pad-r) 0 15px;
+  }
+
+  .ico {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: 0;
+    background: none;
+    color: var(--label);
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.15s;
+  }
+  .ico:active { background: rgba(255, 255, 255, 0.1); }
+
+  .mtitle {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: 0.3px;
+  }
+
+  .acts { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
+  /* 面包屑：右侧对齐，超长时左侧被裁掉 */
+  .crumb {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 9px;
+    padding: 22px var(--pad-l) 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 13.5px;
+    color: var(--crumb);
+  }
+  .crumb > * { flex: 0 0 auto; }
+  .crumb .sep { color: var(--sep); font-size: 13px; }
+
+  /* ---------- 成员列表 ---------- */
+  .screen {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    padding-bottom: 30px;
+  }
+  .screen::-webkit-scrollbar { width: 0; height: 0; }
+
+  .mlist { list-style: none; }
+
+  .mrow {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    height: 70px;
+    padding: 0 var(--pad-l);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .mrow:active { background: #161616; }
+
+  .mav {
+    width: 42px;
+    height: 42px;
+    border-radius: 5px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #1e1e1e;
+    display: block;
+  }
+
+  .mname {
+    font-size: 18px;
+    color: var(--label);
+    letter-spacing: 0.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ---------- 水印 ---------- */
+  .wm {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 117px;
+    place-items: center;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 5;
+  }
+  .wm span {
+    transform: rotate(-12deg);
+    font-size: 9.5px;
+    letter-spacing: 0.6px;
+    color: rgba(255, 255, 255, 0.07);
+    white-space: nowrap;
+  }
+
+  /* ---------- Home 指示条 ---------- */
+  .home-bar {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    border-radius: 3px;
+    background: #4a4a4a;
+    pointer-events: none;
+    z-index: 6;
+  }
+
+  /* ---------- 窄屏：铺满，原生滚动 ---------- */
+  @media (max-width: 460px) {
+    html, body { height: auto; }
+    body { padding: 0; background: #000; display: block; }
+    .phone {
+      width: 100%;
+      max-width: none;
+      height: auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-height: none;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding-top: env(safe-area-inset-top);
+      background: rgba(8, 8, 8, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .screen {
+      overflow: visible;
+      padding-bottom: calc(30px + env(safe-area-inset-bottom));
+    }
+    .wm { position: fixed; }
+    .home-bar {
+      position: fixed;
+      bottom: calc(8px + env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.32);
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="phone">
+
+  <div class="top">
+    <div class="mbar">
+      <a class="ico" href="index.html" aria-label="返回">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 4.5 7.2 12 15 19.5" stroke="#f0f0f0" stroke-width="1.9"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <h1 class="mtitle">04052505</h1>
+      <div class="acts">
+        <button class="ico" aria-label="搜索">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <circle cx="10.5" cy="10.5" r="6.5" stroke="#f0f0f0" stroke-width="1.9"/>
+            <path d="M15.4 15.4 20 20" stroke="#f0f0f0" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a class="ico" href="index.html" aria-label="关闭">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+            <path d="M5 5l14 14M19 5 5 19" stroke="#f0f0f0" stroke-width="1.9" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="crumb">
+      <span>人工智能学院（重邮科大讯飞人工智能学院）</span>
+      <span class="sep">›</span>
+      <span>2025</span>
+      <span class="sep">›</span>
+      <span>04052505</span>
+    </div>
+  </div>
+
+  <div class="screen">
+    <ul class="mlist">
+      <li class="mrow"><img class="mav" src="av/m1.jpg" alt=""><span class="mname">李真真(lzz_zzl)</span></li>
+      <li class="mrow"><img class="mav" src="av/m2.jpg" alt=""><span class="mname">程品越</span></li>
+      <li class="mrow"><img class="mav" src="av/m3.jpg" alt=""><span class="mname">陈泓宇</span></li>
+      <li class="mrow"><img class="mav" src="av/m4.jpg" alt=""><span class="mname">陈俊霖</span></li>
+      <li class="mrow"><img class="mav" src="av/m5.jpg" alt=""><span class="mname">陈露阳</span></li>
+      <li class="mrow"><img class="mav" src="av/m6.jpg" alt=""><span class="mname">陈思亦</span></li>
+      <li class="mrow"><img class="mav" src="av/m7.jpg" alt=""><span class="mname">崔硕</span></li>
+      <li class="mrow"><img class="mav" src="av/m8.jpg" alt=""><span class="mname">邓肯</span></li>
+      <li class="mrow"><img class="mav" src="av/m9.jpg" alt=""><span class="mname">傅鑫彤</span></li>
+      <li class="mrow"><img class="mav" src="av/m10.jpg" alt=""><span class="mname">韩沛辰</span></li>
+      <li class="mrow"><img class="mav" src="av/m11.jpg" alt=""><span class="mname">洪燕</span></li>
+    </ul>
+  </div>
+
+  <div class="wm" id="wm" aria-hidden="true"></div>
+  <div class="home-bar"></div>
+</main>
+
+<script>
+  (function () {
+    var box = document.getElementById('wm');
+    var txt = '韩沛辰@重庆邮电大学3268';
+    for (var i = 0; i < 24; i++) {
+      var s = document.createElement('span');
+      s.textContent = txt;
+      box.appendChild(s);
+    }
+  })();
+</script>
+
+</body>
+</html>
