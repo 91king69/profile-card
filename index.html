@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>个人信息</title>
+<style>
+  :root {
+    --page-bg: #000;
+    --group-bg: #1a1a1a;
+    --row-press: #242424;
+    --label: #f0f0f0;
+    --value: #9f9f9f;
+    --hint: #a5a5ac;
+    --desc: #9c9ca4;
+    --orange: #ff8f4d;
+    --green: #58d65e;
+    --divider: rgba(255, 255, 255, 0.085);
+    --chevron: rgba(255, 255, 255, 0.26);
+    --pad-l: 18px;
+    --pad-r: 15px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    height: 100%;
+    background: radial-gradient(1200px 600px at 50% 0%, #17171c 0%, #0a0a0c 45%, #050506 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+                 "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  /* ---------- 设备外框 ---------- */
+  .phone {
+    position: relative;
+    width: 390px;
+    max-width: 100%;
+    height: 844px;
+    max-height: 100%;
+    background: var(--page-bg);
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.09),
+                0 0 0 10px #0b0b0d,
+                0 0 0 11px rgba(255, 255, 255, 0.06),
+                0 40px 90px rgba(0, 0, 0, 0.75);
+  }
+
+  /* ---------- 导航栏 ---------- */
+  .nav {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--pad-r) 0 15px;
+    flex-shrink: 0;
+  }
+
+  .nav-back {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 22px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.15s;
+  }
+  .nav-back:active { background: rgba(255, 255, 255, 0.1); }
+
+  .nav-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: 0.3px;
+  }
+
+  /* ---------- 滚动区 ---------- */
+  .screen {
+    height: calc(100% - 44px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: 40px;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { width: 0; height: 0; }
+
+  /* ---------- 分组 ---------- */
+  .group {
+    background: var(--group-bg);
+    margin-bottom: 9px;
+  }
+
+  /* ---------- 行 ---------- */
+  .row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 0 var(--pad-r) 0 var(--pad-l);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .row:active { background: var(--row-press); }
+
+  .row + .row::before {
+    content: "";
+    position: absolute;
+    left: var(--pad-l);
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: var(--divider);
+    transform: scaleY(0.6);
+  }
+
+  .label {
+    font-size: 18px;
+    color: var(--label);
+    letter-spacing: 0.2px;
+    flex-shrink: 0;
+  }
+
+  .spacer { flex: 1 1 auto; min-width: 12px; }
+
+  .value {
+    font-size: 16px;
+    color: var(--value);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .value.is-orange { color: var(--orange); }
+  .value.is-hint { color: var(--hint); }
+
+  /* 多个值的容器（右侧区域） */
+  .values {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .chevron { flex-shrink: 0; margin-left: 8px; display: block; }
+
+  /* ---------- 头像行 ---------- */
+  .row-avatar { min-height: 96px; }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 9px;
+    object-fit: cover;
+    display: block;
+    background: #2a2a2a;
+  }
+
+  /* ---------- 最后的信息卡片 ---------- */
+  .card {
+    display: flex;
+    align-items: center;
+    padding: 14px var(--pad-r) 14px var(--pad-l);
+    min-height: 96px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .card:active { background: var(--row-press); }
+
+  .card-main { min-width: 0; flex: 1 1 auto; }
+
+  .card-title {
+    font-size: 16.5px;
+    color: var(--label);
+    line-height: 1.35;
+    letter-spacing: 0.2px;
+  }
+
+  .card-desc {
+    margin-top: 5px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--desc);
+  }
+
+  /* ---------- 绿勾 ---------- */
+  .badge {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  /* ---------- Home 指示条 ---------- */
+  .home-bar {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    border-radius: 3px;
+    background: #4a4a4a;
+    pointer-events: none;
+  }
+
+  /* ---------- 窄屏：铺满 ---------- */
+  @media (max-width: 460px) {
+    body { padding: 0; background: #000; }
+    .phone {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .nav { padding-top: env(safe-area-inset-top); height: calc(44px + env(safe-area-inset-top)); }
+    .screen { height: calc(100% - 44px - env(safe-area-inset-top)); }
+    .home-bar { bottom: calc(8px + env(safe-area-inset-bottom)); }
+  }
+</style>
+</head>
+<body>
+
+<main class="phone">
+  <nav class="nav">
+    <div class="nav-back" aria-label="返回">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M15 4.5 7.2 12 15 19.5" stroke="#f0f0f0" stroke-width="1.9"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1 class="nav-title">个人信息</h1>
+  </nav>
+
+  <div class="screen">
+
+    <!-- 基本信息 -->
+    <section class="group">
+      <div class="row row-avatar">
+        <span class="label">头像</span>
+        <span class="spacer"></span>
+        <div class="values">
+          <img class="avatar" src="avatar.jpg" alt="头像">
+        </div>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="row">
+        <span class="label">姓名</span>
+        <span class="spacer"></span>
+        <span class="value">韩沛辰</span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="row">
+        <span class="label">别名</span>
+        <span class="spacer"></span>
+        <span class="value">无</span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="row">
+        <span class="label">性别</span>
+        <span class="spacer"></span>
+        <span class="value">男</span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 对外信息显示 -->
+    <section class="group">
+      <div class="row">
+        <span class="label">对外信息显示</span>
+        <span class="spacer"></span>
+        <span class="value is-orange">韩沛辰@重庆邮电大学</span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 工作信息 -->
+    <section class="group">
+      <div class="row">
+        <span class="label">工作签名</span>
+        <span class="spacer"></span>
+        <span class="value is-hint">添加工作签名...</span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="row">
+        <span class="label">所在企业</span>
+        <span class="spacer"></span>
+        <div class="values">
+          <svg class="badge" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="9" fill="#58d65e"/>
+            <path d="M5.8 10.3l2.7 2.7 5.6-5.9" stroke="#fff" stroke-width="1.9"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="value">重庆邮电大学</span>
+        </div>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="row">
+        <span class="label">发票抬头</span>
+        <span class="spacer"></span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section class="group">
+      <div class="row">
+        <span class="label">邮箱</span>
+        <span class="spacer"></span>
+        <span class="value">无</span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="row">
+        <span class="label">地址</span>
+        <span class="spacer"></span>
+        <span class="value">无</span>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 学号信息 -->
+    <section class="group">
+      <div class="card">
+        <div class="card-main">
+          <div class="card-title">04052505</div>
+          <div class="card-desc">重庆邮电大学/本科生/人工智能学院（重邮科大讯飞人工智能学院）/2025</div>
+        </div>
+        <svg class="chevron" width="8" height="14" viewBox="0 0 8 14" fill="none">
+          <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.26)" stroke-width="1.65"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="home-bar"></div>
+</main>
+
+</body>
+</html>
